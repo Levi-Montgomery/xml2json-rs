@@ -449,6 +449,13 @@ impl XmlBuilder {
       }
     } else if let Some(array) = node.as_array() {
       // Iterate over child array elements
+      if array.is_empty() {
+        if let Some(ref pk) = parent_key.as_ref() {
+          self.write_start_tag(pk, node)?;
+          self.write_end_tag(pk, node)?;
+        }
+        return Ok(());
+      }
       for child in array {
         if let Some(ref pk) = parent_key.as_ref() {
           self.write_start_tag(pk, child)?;
