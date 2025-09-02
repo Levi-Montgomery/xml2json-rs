@@ -248,6 +248,21 @@ fn build_childobj_pretty_false() {
 }
 
 #[test]
+fn build_empty_array_pretty_false() {
+  let object: JsonValue = serde_json::from_str(r#"{"ApplesList":[]}"#).unwrap();
+  let expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><ApplesList/>";
+
+  let mut xml_builder = XmlConfig::new()
+    .decl(Declaration::new(Version::XML10, Some(Encoding::UTF8), Some(true)))
+    .root_name("root")
+    .finalize();
+  let result = xml_builder.build_from_json(&object);
+
+  let actual = result.expect("Error building XML");
+  assert_eq!(expected, actual);
+}
+
+#[test]
 fn build_childobj_indent_tab() {
   let object = load_json("tests/data/childobj.json");
   let expected = indoc!(
